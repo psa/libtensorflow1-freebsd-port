@@ -17,3 +17,9 @@ make package
 
 This takes a long time to build (~90 minutes with 4 Xeon E31275 @ 3.40GHz
 cores) and 8 GiB of RAM.
+
+# Binaries
+
+Binaries can be found under [releases](https://github.com/psa/libtensorflow1-freebsd-port/releases).
+
+If you're interested in providing binaries for a platform that's not currently supported, please file a bug and I'll add permissions.
