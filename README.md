@@ -1,12 +1,13 @@
 FreeBSD port for Tensorflow 1.15
 
-This provides an easy to use copy of *science/libtensorflow1* until the port is
-committed to the repository.
-
-You can follow the port progress in [bug
-260694](https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=260694)
+This is the development repository for
+[science/libtensorflow1](https://www.freshports.org/science/libtensorflow1/).
 
 # Usage
+
+So the easiest way to install it is `pkg install libtensorflow1`.
+
+To install the dev release:
 
 ```
 cd /usr/ports/science
@@ -16,10 +17,4 @@ make package
 ```
 
 This takes a long time to build (~90 minutes with 4 Xeon E31275 @ 3.40GHz
-cores) and 8 GiB of RAM.
-
-# Binaries
-
-Binaries can be found under [releases](https://github.com/psa/libtensorflow1-freebsd-port/releases).
-
-If you're interested in providing binaries for a platform that's not currently supported, please file a bug and I'll add permissions.
+cores) and 8+ GiB of RAM.
