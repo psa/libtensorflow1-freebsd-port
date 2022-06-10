@@ -1,0 +1,12 @@
+generate-gh-tuples:
+	@make DISTFILES=$$(make -VDISTFILES:Mtensorflow-tensorflow\*) extract
+	@printf %s 'GH_TUPLE='
+	@IFS=: ;\
+	  sed -ne '/\/\/github.com/s/.*\/\([^\/]*\)\/\([^\/]*\)\/archive\/\([^"]*\)",/\1:\2:\3/p' $$(make -VWRKSRC)/tensorflow/workspace.bzl | \
+	  while read name acct tarball; do \
+	  tag=$$(printf %s "$$tarball" | sed -E 's,(.tar.gz|.zip),,'); \
+	  label=$${name}_$${acct}_$$(printf %s "$$tag" | sed 's,[^[:alpha:][:digit:]],_,g'); \
+	  printf ' \\\n	%s' \
+	  	"$$name:$$acct:$$tag:$$label"; \
+	  done; \
+	  printf '\n'
