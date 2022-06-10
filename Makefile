@@ -75,6 +75,9 @@ CC?=		clang
 
 BINARY_ALIAS=	python3=${PYTHON_CMD} python=${PYTHON_CMD}
 
+SOVERSION=	${DISTVERSION}
+PLIST_SUB=	SOVERSION=${SOVERSION}
+
 OPTIONS_DEFINE=	CUDA OPENCL_SYCL ROCM XLA
 OPTIONS_DEFAULT=	AVX
 
@@ -118,6 +121,11 @@ post-extract:
 # here will be overwritten. Creation of this file is to satisfy checks.
 	@${TOUCH} ${WRKDIR}/THIRD_PARTY_TF_C_LICENSES
 
+post-patch:
+	${REINPLACE_CMD} -e 's,%%PYTHON_CMD%%,${PYTHON_CMD},' \
+			-e 's,%%LOCALBASE%%,${LOCALBASE},' \
+		${WRKSRC}/.bazelrc
+
 do-configure:
 	@cd ${WRKSRC} && ${SETENV} \
 	  CC_OPT_FLAGS="-I${LOCALBASE}/include -march=native -Wno-sign-compare" \
@@ -126,11 +134,11 @@ do-configure:
 	  PYTHON_LIB_PATH="${PYTHON_SITELIBDIR}" \
 	  TF_CONFIGURE_IOS=0 \
 	  TF_DOWNLOAD_CLANG=0 \
-		TF_NEED_OPENCL_SYCL=${TF_NEED_OPENCL_SYCL} \
+	  TF_NEED_OPENCL_SYCL=${TF_NEED_OPENCL_SYCL} \
 	  TF_ENABLE_XLA=${TF_ENABLE_XLA} \
 	  TF_IGNORE_MAX_BAZEL_VERSION=0 \
 	  TF_NEED_CUDA=${TF_ENABLE_CUDA} \
-		TF_NEED_MPI=0 \
+	  TF_NEED_MPI=0 \
 	  TF_NEED_ROCM=${TF_ENABLE_ROCM} \
 	  TF_NEED_TENSORRT=0 \
 	  TF_SET_ANDROID_WORKSPACE=0 \
@@ -140,12 +148,12 @@ do-build:
 	@cd ${WRKSRC} && ${LOCALBASE}/bin/bazel ${BAZEL_OPTS} build \
 	  ${BAZEL_ARGS} \
 	  --action_env=PATH=${PATH} \
-		--discard_analysis_cache \
+	  --discard_analysis_cache \
 	  --local_cpu_resources=${MAKE_JOBS_NUMBER} \
-		--nokeep_state_after_build \
+	  --nokeep_state_after_build \
 	  --noshow_loading_progress \
 	  --noshow_progress \
-		--notrack_incremental_state \
+	  --notrack_incremental_state \
 	  --subcommands \
 	  --verbose_failures \
 	  //tensorflow/tools/lib_package:clicenses_generate \
@@ -155,38 +163,38 @@ do-test:
 	@cd ${WRKSRC} && ${LOCALBASE}/bin/bazel ${BAZEL_OPTS} test \
 	  ${BAZEL_ARGS} \
 	  --action_env=PATH=${PATH} \
-		--discard_analysis_cache \
+	  --discard_analysis_cache \
 	  --local_cpu_resources=${MAKE_JOBS_NUMBER} \
-		--nokeep_state_after_build \
+	  --nokeep_state_after_build \
 	  --noshow_loading_progress \
 	  --noshow_progress \
-		--notrack_incremental_state \
+	  --notrack_incremental_state \
 	  --subcommands \
 	  --test_env=CC=${CC} \
 	  --verbose_failures \
 	  //tensorflow/tools/lib_package:libtensorflow_test
 
 pre-install:
-	@${CP} ${WRKSRC}/bazel-bin/tensorflow/tools/lib_package/THIRD_PARTY_TF_C_LICENSES ${WRKDIR}/THIRD_PARTY_TF_C_LICENSES
-	@${MKDIR} ${WRKDIR}/lib_package
-	@tar xz -C ${WRKDIR}/lib_package -f ${WRKSRC}/bazel-bin/tensorflow/tools/lib_package/libtensorflow.tar.gz
-	${MKDIR} ${STAGEDIR}${PREFIX}/include/tensorflow
-	${MKDIR} ${STAGEDIR}${PREFIX}/include/tensorflow/c
+	${CP} ${WRKSRC}/bazel-bin/tensorflow/tools/lib_package/THIRD_PARTY_TF_C_LICENSES \
+	  ${WRKDIR}/THIRD_PARTY_TF_C_LICENSES
+	${MKDIR} ${WRKDIR}/lib_package
+	(cd ${WRKDIR}/lib_package && ${TAR} xvf \
+	  ${WRKSRC}/bazel-bin/tensorflow/tools/lib_package/libtensorflow.tar.gz)
 	${MKDIR} ${STAGEDIR}${PREFIX}/include/tensorflow/c/eager
 
 do-install:
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/c_api_experimental.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/c_api_experimental.h
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/c_api.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/c_api.h
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/eager/c_api.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/eager/c_api.h
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/tf_attrtype.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/tf_attrtype.h
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/tf_datatype.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/tf_datatype.h
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/tf_status.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/tf_status.h
-	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/tf_tensor.h ${STAGEDIR}${PREFIX}/include/tensorflow/c/tf_tensor.h
-	${INSTALL_PROGRAM} ${WRKDIR}/lib_package/lib/libtensorflow.so.${DISTVERSION} ${STAGEDIR}${PREFIX}/lib/libtensorflow.so.${DISTVERSION}
-	${INSTALL_PROGRAM} ${WRKDIR}/lib_package/lib/libtensorflow_framework.so.${DISTVERSION} ${STAGEDIR}${PREFIX}/lib/libtensorflow_framework.so.${DISTVERSION}
-	@${RLN} ${STAGEDIR}${PREFIX}/lib/libtensorflow.so.${DISTVERSION} ${STAGEDIR}${PREFIX}/lib/libtensorflow.so.1
-	@${RLN} ${STAGEDIR}${PREFIX}/lib/libtensorflow.so.1 ${STAGEDIR}${PREFIX}/lib/libtensorflow.so
-	@${RLN} ${STAGEDIR}${PREFIX}/lib/libtensorflow_framework.so.${DISTVERSION} ${STAGEDIR}${PREFIX}/lib/libtensorflow_framework.so.1
-	@${RLN} ${STAGEDIR}${PREFIX}/lib/libtensorflow_framework.so.1 ${STAGEDIR}${PREFIX}/lib/libtensorflow_framework.so
+.for f in c_api_experimental.h c_api.h eager/c_api.h \
+	tf_attrtype.h tf_datatype.h tf_status.h tf_tensor.h
+	${INSTALL_DATA} ${WRKDIR}/lib_package/include/tensorflow/c/${f} \
+	  ${STAGEDIR}${PREFIX}/include/tensorflow/c/${f}
+.endfor
+.for l in libtensorflow libtensorflow_framework
+	${INSTALL_PROGRAM} ${WRKDIR}/lib_package/lib/${l}.so.${SOVERSION} \
+	  ${STAGEDIR}${PREFIX}/lib/
+	${RLN} ${STAGEDIR}${PREFIX}/lib/${l}.so.${SOVERSION} \
+	  ${STAGEDIR}${PREFIX}/lib/${l}.so.1
+	${RLN} ${STAGEDIR}${PREFIX}/lib/${l}.so.1 \
+	  ${STAGEDIR}${PREFIX}/lib/${l}.so
+.endfor
 
 .include <bsd.port.mk>

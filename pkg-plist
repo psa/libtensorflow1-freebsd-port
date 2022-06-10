@@ -10,7 +10,7 @@ include/tensorflow/c/tf_status.h
 include/tensorflow/c/tf_tensor.h
 lib/libtensorflow.so
 lib/libtensorflow.so.1
-lib/libtensorflow.so.1.15.5
+lib/libtensorflow.so.%%SOVERSION%%
 lib/libtensorflow_framework.so
 lib/libtensorflow_framework.so.1
-lib/libtensorflow_framework.so.1.15.5
+lib/libtensorflow_framework.so.%%SOVERSION%%
