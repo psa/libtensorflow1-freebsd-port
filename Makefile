@@ -92,6 +92,8 @@ OPTIONS_SINGLE_CPUFEATURE=	AVX AVX2 NOAVX
 OPTIONS_EXCLUDE:=	${OPTIONS_SINGLE_CPUFEATURE}
 .endif
 
+CPUFEATURE_DESC=  Vector Processing Extensions
+
 NOAVX_DESC=	Disable Advanced Vector Extensions
 AVX_DESC=	Enable Advanced Vector Extensions (AVX)
 AVX2_DESC=	Enable Advanced Vector Extensions v2 (AVX2)
