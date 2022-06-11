@@ -22,6 +22,10 @@ BUILD_DEPENDS=	bash:shells/bash \
 		bazel:devel/bazel029 \
 		git:devel/git
 
+FLAVORS=	default noavx
+FLAVOR?=	${FLAVORS:[1]}
+noavx_PKGNAMESUFFIX=	-noavx
+
 USES=		gmake python:3.7-3.9,build
 
 USE_GITHUB=	yes
@@ -70,7 +74,7 @@ GH_TUPLE=	bazelbuild:rules_closure:308b05b2:bazelbuild_rules_closure \
 
 USE_LDCONFIG=	yes
 
-CONFLICTS_INSTALL=	science/libtensorflow2
+CONFLICTS_INSTALL=	science/libtensorflow2 ${FLAVORS:N${FLAVOR}:S/^/libtensorflow1-/}
 
 CC?=		clang
 
@@ -84,6 +88,9 @@ OPTIONS_DEFAULT=	AVX
 
 OPTIONS_SINGLE=			CPUFEATURE
 OPTIONS_SINGLE_CPUFEATURE=	AVX AVX2 NOAVX
+.if ${FLAVOR:U} == noavx
+OPTIONS_EXCLUDE:=	${OPTIONS_SINGLE_CPUFEATURE}
+.endif
 
 NOAVX_DESC=	Disable Advanced Vector Extensions
 AVX_DESC=	Enable Advanced Vector Extensions (AVX)
