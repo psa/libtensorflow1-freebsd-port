@@ -2,6 +2,7 @@ PORTNAME=	libtensorflow1
 DISTVERSIONPREFIX=	v
 DISTVERSION=	1.15.5
 DISTVERSIONSUFFIX=
+PORTREVISION=	1
 CATEGORIES=	science
 
 MAINTAINER=	freebsd-ports@otoh.org
@@ -128,7 +129,7 @@ post-patch:
 
 do-configure:
 	@cd ${WRKSRC} && ${SETENV} \
-	  CC_OPT_FLAGS="-I${LOCALBASE}/include -march=native -Wno-sign-compare" \
+	  CC_OPT_FLAGS="-I${LOCALBASE}/include" \
 	  PREFIX="${LOCALBASE}" \
 	  PYTHON_BIN_PATH=${PYTHON_CMD} \
 	  PYTHON_LIB_PATH="${PYTHON_SITELIBDIR}" \
