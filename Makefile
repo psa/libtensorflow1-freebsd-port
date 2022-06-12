@@ -19,12 +19,15 @@ LICENSE_PERMS_THIRD_PARTY_TF_C_LICENSES=	dist-mirror dist-sell \
 ONLY_FOR_ARCHS=	amd64
 
 BUILD_DEPENDS=	bash:shells/bash \
-		bazel:devel/bazel029 \
+		bazel029<1:devel/bazel029 \
 		git:devel/git
 
 FLAVORS=	default noavx
 FLAVOR?=	${FLAVORS:[1]}
 noavx_PKGNAMESUFFIX=	-noavx
+noavx_CONFLICTS_INSTALL=	libtensorflow1
+default_CONFLICTS_INSTALL=	libtensorflow1-noavx
+CONFLICTS_INSTALL=	science/libtensorflow2
 
 USES=		gmake python:3.7-3.9,build
 
@@ -73,8 +76,6 @@ GH_TUPLE=	bazelbuild:rules_closure:308b05b2:bazelbuild_rules_closure \
 		GrahamDumpleton:wrapt:1.11.1:GrahamDumpleton_wrapt
 
 USE_LDCONFIG=	yes
-
-CONFLICTS_INSTALL=	science/libtensorflow2 ${FLAVORS:N${FLAVOR}:S/^/libtensorflow1-/}
 
 CC?=		clang
 
