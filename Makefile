@@ -34,46 +34,7 @@ USES=		gmake python:3.7-3.9,build
 USE_GITHUB=	yes
 GH_ACCOUNT=	tensorflow
 GH_PROJECT=	tensorflow
-GH_TUPLE=	bazelbuild:rules_closure:308b05b2:bazelbuild_rules_closure \
-		intel:mkl-dnn:v0.20.6:intel_mkl_dnn_0 \
-		intel:mkl-dnn:v1.0-pc2:intel_mkl_dnn_1 \
-		abseil:abseil-cpp:43ef2148c0936ebf7cb4be6b19927a9d9d145b8f:abseil_abseil_cpp \
-		rvagg:rpi-newer-crosstools:eb68350c5c8ec1663b7fe52c742ac4271e3217c5:rvagg_rpi_newer_crosstools \
-		hfp:libxsmm:1.11:hfp_libxsmm \
-		google:re2:506cfa4bffd060c06ec338ce50ea3468daa6c814:google_re2 \
-		googleapis:google-cloud-cpp:v0.10.0:googleapis_google_cloud_cpp \
-		googleapis:googleapis:f81082ea1e2f85c43649bee26e0d9871d4b41cdb:googleapis_googleapis \
-		google:gemmlowp:12fed0cd7cfcd9e169bf1925bc3a7a58725fdcc3:google_gemmlowp \
-		google:farmhash:816a4ae622e964763ca0862d9dbd19324a1eaf45:google_farmhash \
-		glennrp:libpng:v1.6.37:glennrp_libpng \
-		abseil:abseil-py:pypi-v0.7.1:abseil_abseil_py \
-		protocolbuffers:protobuf:310ba5ee72661c081129eb878c1bbcec936b20f0:protocolbuffers_protobuf \
-		google:nsync:1.22.0:google_nsync \
-		google:googletest:b6cd405286ed8635ece71c72f118e659f4ade3fb:google_googletest \
-		gflags:gflags:v2.2.1:gflags_gflags \
-		grpc:grpc:4566c2a29ebec0835643b972eb99f4306c4234a3:grpc_grpc \
-		nanopb:nanopb:f8ac463766281625ad710900479130c7fcb4d63b:nanopb_nanopb \
-		antirez:linenoise:c894b9e59f02203dbe4e2be657572cf88c4230c3:antirez_linenoise \
-		llvm-mirror:llvm:7a7e03f906aada0cf4b749b51213fe5784eeff84:llvm_mirror_llvm \
-		LMDB:lmdb:LMDB_0.9.22:LMDB_lmdb \
-		open-source-parsers:jsoncpp:1.8.4:open_source_parsers_jsoncpp \
-		google:boringssl:7f634429a04abc48e2eb041c81c5235816c96514:google_boringssl \
-		google:snappy:1.1.7:google_snappy \
-		nvidia:nccl:0ceaec9cee96ae7658aa45686853286651f36384:nvidia_nccl \
-		edenhill:librdkafka:v0.11.5:edenhill_librdkafka \
-		google:pprof:c0fb62ec88c411cc91194465e54db2632845b650:google_pprof \
-		NVlabs:cub:1.8.0:NVlabs_cub \
-		ROCmSoftwarePlatform:rocPRIM:4a33d328f8352df1654271939da66914f2334424:ROCmSoftwarePlatform_rocPRIM \
-		cython:cython:0.28.4:cython_cython \
-		intel:ARM_NEON_2_x86_SSE:1200fe90bb174a6224a525ee60148671a786a71f:intel_ARM_NEON_2_x86_SSE \
-		google:double-conversion:3992066a95b823efc8ccc1baf82a1cfc73f6e9b8:google_double_conversion \
-		bazelbuild:rules_android:v0.1.1:bazelbuild_rules_android \
-		01org:tbb:2019_U1:01org_tbb \
-		NervanaSystems:ngraph:v0.11.0:NervanaSystems_ngraph \
-		nlohmann:json:v3.4.0:nlohmann_json \
-		NervanaSystems:ngraph-tf:v0.9.0:NervanaSystems_ngraph_tf \
-		pybind:pybind11:v2.3.0:pybind_pybind11 \
-		GrahamDumpleton:wrapt:1.11.1:GrahamDumpleton_wrapt
+.include "Makefile.gh_tuple"
 
 USE_LDCONFIG=	yes
 
