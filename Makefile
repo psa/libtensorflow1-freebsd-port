@@ -2,7 +2,7 @@ PORTNAME=	libtensorflow1
 DISTVERSIONPREFIX=	v
 DISTVERSION=	1.15.5
 DISTVERSIONSUFFIX=
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	science
 
 MAINTAINER=	freebsd-ports@otoh.org
@@ -99,7 +99,7 @@ NOAVX_DESC=	Disable Advanced Vector Extensions
 AVX_DESC=	Enable Advanced Vector Extensions (AVX)
 AVX2_DESC=	Enable Advanced Vector Extensions v2 (AVX2)
 
-NOAVX_VARS=	BAZEL_ARGS=""
+NOAVX_VARS=	BAZEL_ARGS=
 AVX_VARS=	BAZEL_ARGS="--copt=-march=core-avx-i --host_copt=-march=core-avx-i"
 AVX2_VARS=	BAZEL_ARGS="--copt=-march=core-avx2 --host_copt=-march=core-avx2"
 
@@ -118,6 +118,19 @@ ROCM_VARS_OFF=	TF_ENABLE_ROCM=0
 XLA_DESC=	Enable Accelerated Linear Algebra (XLA)
 XLA_VARS=	TF_ENABLE_XLA=1
 XLA_VARS_OFF=	TF_ENABLE_XLA=0
+
+BAZEL_ARGS+=  --action_env=PATH=${PATH} \
+    --color=no \
+    --discard_analysis_cache \
+    --distdir=${DISTDIR} \
+    --local_cpu_resources=${MAKE_JOBS_NUMBER} \
+    --nokeep_state_after_build \
+    --noshow_loading_progress \
+    --noshow_progress \
+    --notrack_incremental_state \
+    --subcommands \
+    --verbose_failures \
+    --worker_max_instances=${MAKE_JOBS_NUMBER}
 
 BAZEL_OPTS=	--output_user_root=${WRKDIR}/bazel_out
 
@@ -158,31 +171,13 @@ do-configure:
 do-build:
 	@cd ${WRKSRC} && ${LOCALBASE}/bin/bazel ${BAZEL_OPTS} build \
 	  ${BAZEL_ARGS} \
-	  --action_env=PATH=${PATH} \
-	  --discard_analysis_cache \
-	  --local_cpu_resources=${MAKE_JOBS_NUMBER} \
-	  --nokeep_state_after_build \
-	  --noshow_loading_progress \
-	  --noshow_progress \
-	  --notrack_incremental_state \
-	  --subcommands \
-	  --verbose_failures \
 	  //tensorflow/tools/lib_package:clicenses_generate \
 	  //tensorflow/tools/lib_package:libtensorflow.tar.gz
 
 do-test:
 	@cd ${WRKSRC} && ${LOCALBASE}/bin/bazel ${BAZEL_OPTS} test \
 	  ${BAZEL_ARGS} \
-	  --action_env=PATH=${PATH} \
-	  --discard_analysis_cache \
-	  --local_cpu_resources=${MAKE_JOBS_NUMBER} \
-	  --nokeep_state_after_build \
-	  --noshow_loading_progress \
-	  --noshow_progress \
-	  --notrack_incremental_state \
-	  --subcommands \
 	  --test_env=CC=${CC} \
-	  --verbose_failures \
 	  //tensorflow/tools/lib_package:libtensorflow_test
 
 pre-install:
